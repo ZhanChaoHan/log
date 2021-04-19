@@ -18,8 +18,8 @@ public class Log4jTest {
 	@Before
 	public void init() {
 //		BasicConfigurator.configure ();//默认的配置
-		PropertyConfigurator.configure(Log4jTest.class.getResource("/log4j.properties"));
-//		DOMConfigurator.configure ( String filename )// ：读取XML形式的配置文件
+//		PropertyConfigurator.configure(Log4jTest.class.getResource("/log4j.properties"));
+		DOMConfigurator.configure (Log4jTest.class.getResource("/log4j.xml"));// ：读取XML形式的配置文件
 	}
 
 	@Test
