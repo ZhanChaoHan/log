@@ -22,7 +22,7 @@ public class Log4jTest {
 	@Before
 	public void init() {
 //		BasicConfigurator.configure ();//默认的配置
-		PropertyConfigurator.configure(Log4jTest.class.getResource("/log4j.properties"));
+		PropertyConfigurator.configure(PrintTest.class.getResource("/log4j.properties"));
 //		DOMConfigurator.configure (Log4jTest.class.getResource("/log4j.xml"));// ：读取XML形式的配置文件
 	}
 
@@ -41,7 +41,7 @@ public class Log4jTest {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
-		connection.createStatement().execute("CREATE TABLE `log_icecoldmonitor` ( "
+		connection.createStatement().execute("CREATE TABLE `log_info` ( "
 				+ "  `Id` int(11) NOT NULL AUTO_INCREMENT, "
 				+ "  `level` varchar(255) NOT NULL DEFAULT '' COMMENT '优先级', "
 				+ "  `category` varchar(255) NOT NULL DEFAULT '' COMMENT '类目', "
@@ -51,17 +51,5 @@ public class Log4jTest {
 				+ "  `note` text COMMENT '日志信息', "
 				+ "  PRIMARY KEY (`Id`) "
 				+ ")");
-	}
-	@Test
-	public void jdbcShowTABLE() throws Exception {
-		Connection connection=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf8&useSSL=true&serverTimezone=UTC", "root", "");
-		
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		
-		ResultSet resultSet=connection.prepareStatement("show tables").executeQuery();
-		
-		while(resultSet.next()) {
-			System.out.println(resultSet.getString(1));
-		}
 	}
 }

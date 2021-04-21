@@ -1,6 +1,5 @@
 package com.jachs.log4j;
 
-import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -14,10 +13,8 @@ public class PrintTest {
 	private static Logger logger = Logger.getLogger(PrintTest.class);
 
 	public static void main(String[] args) throws Exception {
-		String project=new File("").getAbsolutePath();
-		PropertyConfigurator.configure(project+File.separator+"target"+File.separator+"test-classes"+File.separator+"log4j.properties");
+		PropertyConfigurator.configure(PrintTest.class.getResource("/log4j.properties"));
 		
-
 		logger.info("普通Info信息");
 		logger.debug("调试debug信息");
 		logger.error("报错error信息");
