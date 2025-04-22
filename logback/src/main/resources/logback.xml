@@ -4,7 +4,7 @@
     xmlns="http://www.padual.com/java/logback.xsd" 
     debug="true" packagingData="true" scan="true" scanPeriod="30 seconds">
     
-	<property name="LOG_HOME" value="e:/opt" />
+	<property name="LOG_HOME" value="d:/opt" />
 	<!-- 控制台输出 -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -30,6 +30,7 @@
 	</appender>
 	
 	<!-- 输出到数据库，建表sql在 logback-classic包下；ch.qos.logback.classic.db.script-->
+	<!--  
 	<appender name="db" class="ch.qos.logback.classic.db.DBAppender">
 		<connectionSource  class="ch.qos.logback.core.db.DataSourceConnectionSource">
 			<dataSource class="com.alibaba.druid.pool.DruidDataSource">
@@ -40,11 +41,43 @@
 			</dataSource>
 		</connectionSource>
 	</appender>
+	-->
 	
+	<!-- SiftingAppender实现每个线程一个独立的日志文件 -->
+	<appender name="Async_FileLog" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<discriminator>  
+            <key>application.name</key>  
+            <defaultValue>service</defaultValue>  
+        </discriminator>  
+        <sift>  
+			<appender name="FileLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<!--  
+				<filter class="ch.qos.logback.classic.filter.LevelFilter">
+					<level>INFO</level>
+					<onMatch>ACCEPT</onMatch>
+					<onMismatch>DENY</onMismatch>
+				</filter>
+				-->
+				<file>${LOG_HOME}/${application.name}/service-info.log</file>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>${LOG_HOME}/${application.name}/applog/%d{yyyyMMdd}/service-info.%d{yyyyMMdd}.%i.log</fileNamePattern>
+					<maxHistory>7</maxHistory>
+					<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+						<maxFileSize>200MB</maxFileSize>
+					</timeBasedFileNamingAndTriggeringPolicy>
+				</rollingPolicy>
+				<encoder>
+					<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - [%method,%line] - %msg%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
+
 	<!-- 日志输出级别,仅仅输出级别大于level的日志-->
 	<root level="debug">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
-		<appender-ref ref="db" />
+		<appender-ref ref="Async_FileLog" />
+		<!--  <appender-ref ref="db" />-->
 	</root>
 </configuration>
